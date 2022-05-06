@@ -34,3 +34,9 @@ tasks:
     version: 0.5.0
     parameters:
       containerName: 'main'
+  #########################################################
+  #######   Challenges for Rolling Upgrade without downtime
+  #########################################################
+  - name: 'steadybit/definitions/kubernetes/deployments/policies/rolling-update'
+    version: 0.5.0
+
