@@ -8,15 +8,15 @@ tasks:
   - name: >-
       steadybit/definitions/kubernetes/deployments/experiments/faultless-redundancy-container
     version: 0.5.0
-    define:
+    parameters:
       containerName: 'main'
   - name: steadybit/definitions/kubernetes/deployments/weak-spots/readiness-probe
     version: 0.5.0
-    define:
+    parameters:
       containerName: 'main'
   - name: steadybit/definitions/kubernetes/deployments/weak-spots/single-replica
     version: 0.5.0
-    define:
+    parameters:
       containerName: 'main'
   ###########################################
   #######   Challenges for Recovery
@@ -24,7 +24,7 @@ tasks:
   - name: >-
       steadybit/definitions/kubernetes/deployments/experiments/recovery-of-single-container
     version: 0.5.0
-    define:
+    parameters:
       containerName: 'main'
   - name: >-
       steadybit/definitions/kubernetes/deployments/experiments/faultless-redundancy-rolling-update
@@ -32,5 +32,5 @@ tasks:
   - name: >-
       steadybit/definitions/kubernetes/deployments/weak-spots/deployment-strategy
     version: 0.5.0
-    define:
+    parameters:
       containerName: 'main'
