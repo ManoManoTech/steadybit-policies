@@ -37,6 +37,6 @@ tasks:
   #########################################################
   #######   Challenges for Rolling Upgrade without downtime
   #########################################################
-  - name: 'steadybit/definitions/kubernetes/deployments/policies/rolling-update'
+  - name: 'steadybit/definitions/kubernetes/deployments/experiments/faultless-redundancy-rolling-update'
     version: 0.5.0
 
