@@ -1,0 +1,51 @@
+--- !<experiment>
+name: "ManoManoTech/steadybit-policies/experiments/memory-attack"
+type: "experiment"
+description: "How the kubernetes deployment and observability reacts in case of memory surge"
+inputs:
+  - name: environmentName
+  - name: teamKey
+  - name: k8sClusterName
+  - name: k8sNamespaceName
+  - name: k8sDeploymentName
+  - name: containerName
+  - name: httpEndpoint
+    type: url
+  - name: successRate
+    type: number
+    defaultValue: 100
+experiment:
+  name: "{{k8sNamespaceName}}/{{k8sDeploymentName}} faultless during a memory surge"
+  team: "{{teamKey}}"
+  hypothesis: "When the application have a memory stress, kubernetes should deploy another pod with an HPA and we should detect it in Datadog."
+  environment: "{{environmentName}}"
+  lanes:
+    - steps:
+        - !<attack>
+          ignoreFailure: false
+          parameters:
+            duration: "2m"
+            percentage: 100
+          attackType: "container-memory-attack"
+          radius:
+            targetType: "kubernetes-deployment"
+            list:
+              - "{{k8sClusterName}}/{{k8sNamespaceName}}/{{k8sDeploymentName}}"
+            percentage: 50
+    - steps:
+        - !<action>
+          ignoreFailure: false
+          parameters:
+            headers: []
+            method: "GET"
+            successRate: "{{successRate}}"
+            maxConcurrent: 5
+            requestsPerSecond: 1
+            body: ""
+            url: "{{httpEndpoint}}"
+            duration: "2m"
+            followRedirects: false
+            readTimeout: "5s"
+            connectTimeout: "5s"
+            responsesContains: ""
+          actionType: "check:http"

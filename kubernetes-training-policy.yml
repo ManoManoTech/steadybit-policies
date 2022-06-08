@@ -7,5 +7,7 @@ tasks:
   ###########################################
   - name: >-
       ManoManoTech/steadybit-policies/experiments/cpu-attack
-    version: 1.3.3
-
+    version: 1.3.4
+  - name: >-
+      ManoManoTech/steadybit-policies/experiments/memory-attack
+    version: 1.3.4
