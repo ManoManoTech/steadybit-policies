@@ -9,6 +9,11 @@ inputs:
   - name: k8sNamespaceName
   - name: k8sDeploymentName
   - name: containerName
+  - name: httpEndpoint
+    type: url
+  - name: successRate
+    type: number
+    defaultValue: 100
 experiment:
   name: "{{k8sNamespaceName}}/{{k8sDeploymentName}} faultless during a cpu surge"
   team: "{{teamKey}}"
@@ -28,3 +33,11 @@ experiment:
             list:
               - "{{k8sClusterName}}/{{k8sNamespaceName}}/{{k8sDeploymentName}}"
             percentage: 50
+    - steps:
+        - type: action
+          actionType: check:http
+          customLabel: 'THEN: {{successRate}}% HTTP-Calls are successful'
+          parameters:
+            duration: 2m
+            successRate: "{{successRate}}"
+            url: "{{httpEndpoint}}"
