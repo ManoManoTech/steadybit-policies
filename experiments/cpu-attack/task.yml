@@ -34,10 +34,19 @@ experiment:
               - "{{k8sClusterName}}/{{k8sNamespaceName}}/{{k8sDeploymentName}}"
             percentage: 50
     - steps:
-        - type: action
-          actionType: check:http
-          customLabel: 'THEN: {{successRate}}% HTTP-Calls are successful'
+        - !<action>
+          ignoreFailure: false
           parameters:
-            duration: 2m
+            headers: []
+            method: "GET"
             successRate: "{{successRate}}"
+            maxConcurrent: 5
+            requestsPerSecond: 1
+            body: ""
             url: "{{httpEndpoint}}"
+            duration: "2m"
+            followRedirects: false
+            readTimeout: "5s"
+            connectTimeout: "5s"
+            responsesContains: ""
+          actionType: "check:http"
