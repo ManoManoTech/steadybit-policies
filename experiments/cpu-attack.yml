@@ -1,0 +1,30 @@
+--- !<experiment>
+name: "ManoManoTech/steadybit-policies/experiments/cpu-attack"
+type: "experiment"
+description: "How the kubernetes deployment and observability reacts in case of cpu surge"
+inputs:
+  - name: environmentName
+  - name: teamKey
+  - name: k8sClusterName
+  - name: k8sNamespaceName
+  - name: k8sDeploymentName
+  - name: containerName
+experiment:
+  name: "{{k8sNamespaceName}}/{{k8sDeploymentName}} faultless during a cpu surge"
+  team: "{{teamKey}}"
+  hypothesis: "When the application have a cpu stress, kubernetes should deploy another pod with an HPA and we should detect it in Datadog."
+  environment: "{{environmentName}}"
+  lanes:
+    - steps:
+        - !<attack>
+          ignoreFailure: false
+          parameters:
+            duration: "2m"
+            cpuLoad: 90
+            workers: "0"
+          attackType: "container-cpu-attack"
+          radius:
+            targetType: "kubernetes-deployment"
+            list:
+              - "{{k8sClusterName}}/{{k8sNamespaceName}}/{{k8sDeploymentName}}"
+            percentage: 50

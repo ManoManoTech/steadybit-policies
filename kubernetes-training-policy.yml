@@ -1,0 +1,11 @@
+name: manomano-kubernetes
+description: Challenges for training purpose.
+type: policy
+tasks:
+  ###########################################
+  #######   Resources experiments
+  ###########################################
+  - name: >-
+      ManoManoTech/steadybit-policies/experiments/cpu-attack
+    version: 1.0.0
+
