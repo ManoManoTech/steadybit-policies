@@ -1,0 +1,28 @@
+--- !<experiment>
+name: "ManoManoTech/steadybit-policies/experiments/delete-pod-attack"
+type: "experiment"
+description: "How the kubernetes deployment and observability reacts in case of pods restarting in loop"
+inputs:
+  - name: environmentName
+  - name: teamKey
+  - name: k8sClusterName
+  - name: k8sNamespaceName
+  - name: k8sDeploymentName
+  - name: containerName
+experiment:
+  name: "{{k8sNamespaceName}}/{{k8sDeploymentName}} can recover from multiple pods restarting"
+  team: "{{teamKey}}"
+  hypothesis: "When the application have a deployment issue causing the pod to restart, kubernetes should try to restart it until it works and the traffic should be load balancing on a healthy source"
+  environment: "{{environmentName}}"
+  lanes:
+    - steps:
+        - !<attack>
+          ignoreFailure: false
+          parameters:
+            duration: "5m"
+          attackType: "kubernetes-delete-pod-attack"
+          radius:
+            targetType: "kubernetes-deployment"
+            list:
+              - "{{k8sClusterName}}/{{k8sNamespaceName}}/{{k8sDeploymentName}}"
+            percentage: 80
