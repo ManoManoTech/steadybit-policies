@@ -1,0 +1,113 @@
+--- !<experiment>
+name: "ea_0034/ADM/ADM-569"
+version: "5"
+type: "experiment"
+inputs:
+  - name: "teamKey"
+    type: "string"
+    required: true
+  - name: "environmentName"
+    type: "string"
+    required: true
+experiment:
+  name: "Am I a Carbon Monster?"
+  team: "{{teamKey}}"
+  environment: "{{environmentName}}"
+  lanes:
+    - steps:
+        - !<wait>
+          ignoreFailure: false
+          parameters:
+            duration: "15s"
+          metricQueries: []
+          metricChecks: []
+        - !<action>
+          ignoreFailure: false
+          parameters:
+            duration: "02m"
+            environment: []
+            file: ""
+            infinite: false
+          metricQueries: []
+          metricChecks: []
+          customLabel: "Add load to see energy taken by the pod, from Datadog traces,\
+        \ can you spot the main energy consumer ? DB Request or too complex method\
+        \ ?"
+          actionType: "loadtest:k6"
+        - !<wait>
+          ignoreFailure: false
+          parameters:
+            duration: "15s"
+          metricQueries: []
+          metricChecks: []
+        - !<action>
+          ignoreFailure: false
+          parameters:
+            duration: "2m"
+            podPercentage: 100
+          metricQueries: []
+          metricChecks: []
+          customLabel: "How much energy we consume during repeating startups"
+          actionType: "kubernetes-delete-pod-attack"
+          radius:
+            targetType: "kubernetes-deployment"
+            query:
+              operator: "AND"
+              predicates:
+                - key: "k8s.cluster-name"
+                  operator: "EQUALS"
+                  values:
+                    - null
+                - key: "k8s.namespace"
+                  operator: "EQUALS"
+                  values:
+                    - null
+                - key: "k8s.deployment"
+                  operator: "EQUALS"
+                  values:
+                    - null
+            percentage: 50
+        - !<wait>
+          ignoreFailure: false
+          parameters:
+            duration: "15s"
+          metricQueries: []
+          metricChecks: []
+        - !<action>
+          ignoreFailure: false
+          parameters:
+            duration: "2m"
+            trigger: ""
+            body: ""
+            message: "Error injected through the Steadybit Kong extension (through the\
+          \ request-termination Kong plugin)"
+            contentType: ""
+            consumer: ""
+            status: 500
+          metricQueries: []
+          metricChecks: []
+          customLabel: "If we have our main internel dependency return 500 error, do I\
+        \ have a overhead somewhere?"
+          actionType: "com.github.steadybit.extension_kong.request_termination"
+          radius:
+            targetType: "com.github.steadybit.extension_kong.service"
+            percentage: 50
+    - steps:
+        - !<wait>
+          ignoreFailure: false
+          parameters:
+            duration: "284s"
+          metricQueries: []
+          metricChecks: []
+        - !<action>
+          ignoreFailure: false
+          parameters:
+            duration: "2m"
+            environment: []
+            file: ""
+            infinite: false
+          metricQueries: []
+          metricChecks: []
+          customLabel: "Add load to highlight overhead"
+          actionType: "loadtest:k6"
+  version: 5
